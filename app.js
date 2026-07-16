@@ -1,9 +1,15 @@
-const state={crystals:2480,energy:7,ready:{Элори:140,Фонея:80},spinning:false};
+window.state={crystals:2480,energy:7,ready:{Элори:140,Фонея:80},spinning:false};
+const state = window.state;
 const $=s=>document.querySelector(s),format=n=>n.toLocaleString('ru-RU');
-function update(){ $('#crystalValue').textContent=format(state.crystals);$('#energyValue').textContent=state.energy;$('#readyTotal').textContent=Object.values(state.ready).reduce((a,b)=>a+b,0); }
+function update(){ 
+  $('#crystalValue').textContent=format(state.crystals);
+  $('#energyValue').textContent=state.energy;
+  $('#readyTotal').textContent=Object.values(state.ready).reduce((a,b)=>a+b,0); 
+  if (window.update3DScene) window.update3DScene(state);
+}
 function toast(message){const el=$('#toast');el.textContent=message;el.classList.add('show');clearTimeout(toast.timer);toast.timer=setTimeout(()=>el.classList.remove('show'),2200)}
-function collect(moon){const amount=state.ready[moon];if(!amount)return toast('Эта луна ещё заряжается');state.crystals+=amount;delete state.ready[moon];const button=[...document.querySelectorAll('[data-moon]')].find(x=>x.dataset.moon===moon);button.classList.remove('moon-ready');button.classList.add('moon-charging');button.querySelector('small').textContent='08:24';$('#naviText').textContent='Отлично! Заряди луну, чтобы вырастить ещё кристаллы.';update();toast(`+${amount} кристаллов · ${moon}`)}
-document.querySelectorAll('.moon').forEach(b=>b.addEventListener('click',()=>collect(b.dataset.moon)));
+function collect(moon){if(!moon || moon.startsWith('slot'))return toast('Открой этот слот за 10 000 ✦');const amount=state.ready[moon];if(!amount)return toast('Эта луна ещё заряжается');state.crystals+=amount;delete state.ready[moon];const button=[...document.querySelectorAll('.moon')].find(x=>x.dataset.moon===moon);if(button)button.querySelector('small').textContent='08:24';$('#naviText').textContent='Отлично! Заряди луну, чтобы вырастить ещё кристаллы.';update();toast(`+${amount} кристаллов · ${moon}`)}
+document.querySelectorAll('.moon').forEach(b=>b.addEventListener('click',()=>collect(b.dataset.moon || b.dataset.id)));
 $('#collectAll').addEventListener('click',()=>{if(!Object.keys(state.ready).length)return toast('Пока нечего собирать');Object.keys({...state.ready}).forEach(collect)});
 $('#chargeAll').addEventListener('click',()=>{if(state.energy<1)return toast('Нужно больше энергии');state.energy--;$('#naviText').textContent='Луны заряжены. Кристаллы вырастут совсем скоро!';update();toast('Луны заряжены · −1 энергия')});
 const sheets={tasks:'#tasksSheet',wheel:'#wheelSheet',draws:'#drawsSheet'};
