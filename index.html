@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#080b2b" />
+    <title>Меганавты — прототип</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Unbounded:wght@600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="phone-shell">
+      <section class="app" aria-label="Игра Меганавты">
+        <header class="topbar">
+          <button class="profile" id="menuButton" aria-label="Открыть профиль"><span class="avatar">Н</span><span>Навигатор</span></button>
+          <div class="resources" aria-label="Ресурсы">
+            <button class="resource energy"><span>⚡</span><b id="energyValue">7</b></button>
+            <button class="resource crystals"><span>✦</span><b id="crystalValue">2 480</b></button>
+          </div>
+        </header>
+
+        <div class="sky-glow"></div><div class="stars"></div>
+        <section class="hero-copy">
+          <p class="eyebrow">ОРБИТА 04 · ДОБЫЧА ГОТОВА</p>
+          <h1>Твоя маленькая<br><em>вселенная</em></h1>
+        </section>
+
+        <section class="space-scene" aria-label="Планета и луны">
+          <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
+          <button class="moon moon-ready" data-moon="Элори" data-reward="140" aria-label="Собрать кристаллы с луны Элори"><i></i><span class="moon-label"><b>Элори</b><small>140 ✦</small></span></button>
+          <button class="moon moon-charging" data-moon="Теллу" aria-label="Луна Теллу заряжается"><i></i><span class="moon-label"><b>Теллу</b><small>08:24</small></span></button>
+          <button class="moon moon-ready moon-small" data-moon="Фонея" data-reward="80" aria-label="Собрать кристаллы с луны Фонея"><i></i><span class="moon-label"><b>Фонея</b><small>80 ✦</small></span></button>
+          <button class="planet" id="planetButton" aria-label="Открыть кастомизацию планеты"><span class="planet-ring"></span><span class="land land-a"></span><span class="land land-b"></span><span class="navi">👩🏽‍🚀</span></button>
+        </section>
+        
+        <button class="gamepad-easteregg" id="openGames" aria-label="Открыть мини-игры"><span>🎮</span><small>?</small></button>
+
+        <section class="action-panel">
+          <div class="navi-message"><span>👩🏽‍🚀</span><p id="naviText">Кристаллы выросли! Пора их собрать.</p></div>
+          <div class="action-row">
+            <button class="primary-action" id="collectAll"><span>✦</span> Собрать всё <b id="readyTotal">220</b></button>
+            <button class="round-action" id="chargeAll" aria-label="Зарядить луны">⚡</button>
+          </div>
+        </section>
+
+        <nav class="nav" aria-label="Разделы игры">
+          <button class="nav-item active" data-view="home"><span>◉</span>Орбита</button>
+          <button class="nav-item" data-view="tasks"><span>✓</span>Задания<i>3</i></button>
+          <button class="nav-item" data-view="wheel"><span>✺</span>Колесо</button>
+          <button class="nav-item" data-view="draws"><span>♔</span>Призы</button>
+        </nav>
+
+        <section class="sheet hidden" id="tasksSheet">
+          <button class="close-sheet">×</button>
+          <p class="eyebrow">ЕЖЕДНЕВНЫЕ ЗАДАНИЯ</p>
+          <h2>Новый день — новая энергия</h2>
+          <div class="task done">
+            <span>✓</span>
+            <p>Войди в игру<br><small>Награда получена: +3 ⚡</small></p>
+          </div>
+          <div class="task" id="taskCharge">
+            <span id="taskChargeProgress">2/5</span>
+            <p>Заряди луну 5 раз<br><small>Награда: 1 ⚡</small></p>
+            <button class="task-go" id="goCharge">К орбите</button>
+          </div>
+          <div class="task" id="taskWater">
+            <span id="taskWaterProgress">0/3</span>
+            <p>Пройди «Орбитальный сортер»<br><small>Награда: 100 ✦ + 1 ⚡</small></p>
+            <button class="task-go" id="goWater">Играть</button>
+          </div>
+          <div class="task" id="taskArrow">
+            <span id="taskArrowProgress">0/3</span>
+            <p>Расчисти «Лунную пробку»<br><small>Награда: 100 ✦ + 1 ⚡</small></p>
+            <button class="task-go" id="goArrow">Играть</button>
+          </div>
+        </section>
+        <section class="sheet hidden" id="wheelSheet"><button class="close-sheet">×</button><p class="eyebrow">ИНСТАНТ-ВИН</p><h2>Колесо удачи</h2><div class="wheel"><div>✦<br><small>+250</small></div></div><p class="wheel-note">Сегодня доступно 2 бесплатных вращения</p><button class="primary-action full" id="spinWheel">Крутить бесплатно</button></section>
+        <section class="sheet hidden" id="drawsSheet"><button class="close-sheet">×</button><p class="eyebrow">РОЗЫГРЫШ</p><h2>Лови большие призы</h2><article class="prize-card"><span>🎧</span><div><b>Наушники будущего</b><small>Розыгрыш через 8 дней</small></div><button>50 ✦</button></article><article class="prize-card"><span>🚀</span><div><b>Полёт в Звёздный городок</b><small>Розыгрыш через 21 день</small></div><button>120 ✦</button></article></section>
+        <section class="sheet hidden games-sheet" id="gamesSheet"><button class="close-sheet">×</button><p class="eyebrow">МИНИ‑ИГРЫ · ДЕНЬ 04</p><h2>Поиграем?</h2><p class="game-intro">Пройди три уровня в любой игре и забери ежедневную награду.</p><button class="game-card water-card" data-game="water"><span class="game-art">🧪</span><span><b>Water Sorter</b><small>Собери воду по цветам</small></span><i>Играть</i></button><button class="game-card arrow-card" data-game="arrow"><span class="game-art">↗</span><span><b>Arrow Puzzle</b><small>Расчисти лунный затор</small></span><i>Играть</i></button></section>
+        <section class="sheet hidden play-sheet" id="waterSheet"><button class="close-sheet">×</button><p class="eyebrow">WATER SORTER · УРОВЕНЬ 01</p><h2>Разлей по цветам</h2><p class="game-instruction">Нажми на пробирку, затем выбери, куда перелить верхний слой.</p><div class="water-board" id="waterBoard"></div><button class="reset-game" id="resetWater">↻ Начать заново</button></section>
+        <section class="sheet hidden play-sheet" id="arrowSheet"><button class="close-sheet">×</button><p class="eyebrow">ARROW PUZZLE · УРОВЕНЬ 01</p><h2>Освободи орбиты</h2><p class="game-instruction">Луна улетит, если на её пути нет другой луны.</p><div class="arrow-board" id="arrowBoard"></div><button class="reset-game" id="resetArrow">↻ Начать заново</button></section>
+        <section class="side-menu hidden" id="sideMenu">
+          <button class="close-sheet" id="closeMenu" aria-label="Закрыть меню">×</button>
+          <p class="eyebrow">МЕНЮ УПРАВЛЕНИЯ</p>
+          <h2>Меганавты</h2>
+          <div class="menu-orbit">🛸</div>
+          <button class="menu-game" id="menuGameButton" aria-label="Открыть мини-игры">
+            <span class="gamepad-icon">🎮</span>
+            <span>
+              <b>Мини-игры</b>
+              <small>Развлечения и бонусы</small>
+            </span>
+            <i>➔</i>
+          </button>
+          <button class="menu-link" id="menuLinkProfile"><span>👤</span>Профиль Навигатора</button>
+          <button class="menu-link" id="menuLinkTasks"><span>✓</span>Задания</button>
+          <button class="menu-link" id="menuLinkWheel"><span>✺</span>Колесо удачи</button>
+        </section>
+
+        <div class="toast" id="toast" role="status"></div>
+      </section>
+    </main>
+    <script src="app.js"></script>
+  </body>
+</html>

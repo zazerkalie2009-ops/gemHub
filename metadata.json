@@ -1,0 +1,6 @@
+{
+  "name": "Меганавты",
+  "description": "Интерактивный прототип космической игры «Меганавты» с добычей кристаллов и встроенными мини-играми.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
