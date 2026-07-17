@@ -652,6 +652,12 @@ button {
 .water.orange {
   background: #ffad64;
 }
+.water.green {
+  background: #56d94c;
+}
+.water.purple {
+  background: #a85cf0;
+}
 .reset-game {
   display: block;
   margin: auto;

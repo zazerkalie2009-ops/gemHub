@@ -64,14 +64,31 @@ if (goCharge) goCharge.addEventListener('click', () => { closeSheets(); });
 
 document.querySelectorAll('.game-card').forEach(b=>b.addEventListener('click',()=>{closeSheets();$(`#${b.dataset.game}Sheet`).classList.remove('hidden')}));
 
-const waterStart=[['cyan','pink','orange'],['pink','orange','cyan'],['orange','cyan','pink'],[]];let water=[],selectedTube=null;
-function resetWater(){water=waterStart.map(t=>[...t]);selectedTube=null;renderWater()}
+const waterLevels = [
+  [['cyan', 'pink', 'cyan'], ['pink', 'cyan', 'pink'], []],
+  [['cyan', 'pink', 'orange'], ['pink', 'orange', 'cyan'], ['orange', 'cyan', 'pink'], []],
+  [['cyan', 'orange', 'pink'], ['pink', 'cyan', 'orange'], ['orange', 'pink', 'cyan'], []],
+  [['green', 'cyan', 'pink'], ['pink', 'orange', 'green'], ['orange', 'cyan', 'orange'], ['cyan', 'green', 'pink'], []],
+  [['cyan', 'pink', 'green'], ['orange', 'green', 'cyan'], ['pink', 'orange', 'pink'], ['green', 'cyan', 'orange'], []]
+];
+let currentWaterLevel = 0;
+let water=[],selectedTube=null;
+function resetWater(){water=waterLevels[currentWaterLevel].map(t=>[...t]);selectedTube=null;renderWater()}
 function renderWater(){const board=$('#waterBoard');board.innerHTML='';water.forEach((tube,index)=>{const b=document.createElement('button');b.className=`tube ${selectedTube===index?'selected':''}`;b.setAttribute('aria-label',`Пробирка ${index+1}`);tube.forEach(color=>{const layer=document.createElement('i');layer.className=`water ${color}`;b.append(layer)});b.addEventListener('click',()=>pourWater(index));board.append(b)})}
-function pourWater(target){if(selectedTube===null){if(!water[target].length)return toast('Эта пробирка пуста');selectedTube=target;return renderWater()}if(selectedTube===target){selectedTube=null;return renderWater()}const from=water[selectedTube],to=water[target],color=from[from.length-1];if(to.length===3||to.length&&to[to.length-1]!==color){selectedTube=null;renderWater();return toast('Вода смешается — выбери другую пробирку')}to.push(from.pop());selectedTube=null;renderWater();if(water.every(t=>!t.length||t.length===3&&new Set(t).size===1)){state.crystals+=100;update();toast('Уровень пройден! +100 кристаллов')}}
+function pourWater(target){if(selectedTube===null){if(!water[target].length)return toast('Эта пробирка пуста');selectedTube=target;return renderWater()}if(selectedTube===target){selectedTube=null;return renderWater()}const from=water[selectedTube],to=water[target],color=from[from.length-1];if(to.length===3||to.length&&to[to.length-1]!==color){selectedTube=null;renderWater();return toast('Вода смешается — выбери другую пробирку')}to.push(from.pop());selectedTube=null;renderWater();if(water.every(t=>!t.length||t.length===3&&new Set(t).size===1)){setTimeout(()=>{state.crystals+=100;update();currentWaterLevel=(currentWaterLevel+1)%waterLevels.length;resetWater();toast('Уровень пройден! +100 кристаллов')},400)}}
 $('#resetWater').addEventListener('click',resetWater);
 
-const arrowStart=['→','↓','↓','→',null,'←','→','↑','←'];let arrows=[];const vectors={'→':[0,1],'←':[0,-1],'↑':[-1,0],'↓':[1,0]};
-function resetArrow(){arrows=[...arrowStart];renderArrows()}
+const arrowLevels = [
+  ['→', '→', '↓', null, null, '↓', null, null, '←'],
+  ['↓', '←', '↑', '↓', null, '↑', '→', '→', '↑'],
+  ['→', '↓', '↑', '↓', null, '↑', '↓', '↓', '←'],
+  ['↓', '↑', '←', '→', null, '→', '→', '→', '↓'],
+  ['→', '↑', '↓', '↓', '↑', '→', '→', '→', '↓']
+];
+let currentArrowLevel = 0;
+let arrows=[];const vectors={'→':[0,1],'←':[0,-1],'↑':[-1,0],'↓':[1,0]};
+function resetArrow(){arrows=[...arrowLevels[currentArrowLevel]];renderArrows()}
 function renderArrows(){const board=$('#arrowBoard');board.innerHTML='';arrows.forEach((arrow,index)=>{const b=document.createElement('button');b.className=`arrow-tile ${arrow?'':'empty'}`;b.textContent=arrow||'';if(arrow)b.addEventListener('click',()=>launchArrow(index,b));board.append(b)})}
-function launchArrow(index,button){const [dr,dc]=vectors[arrows[index]],row=Math.floor(index/3),col=index%3;let r=row+dr,c=col+dc;while(r>=0&&r<3&&c>=0&&c<3){if(arrows[r*3+c]){button.classList.add('blocked');setTimeout(()=>button.classList.remove('blocked'),350);return toast('Путь занят другой луной')}r+=dr;c+=dc}button.classList.add('fly');arrows[index]=null;setTimeout(renderArrows,380);if(!arrows.filter(Boolean).length)setTimeout(()=>{state.energy++;state.crystals+=100;update();toast('Затор расчищен! +1 энергия и +100 кристаллов')},420)}
-$('#resetArrow').addEventListener('click',resetArrow);resetWater();resetArrow();update();
+function launchArrow(index,button){const [dr,dc]=vectors[arrows[index]],row=Math.floor(index/3),col=index%3;let r=row+dr,c=col+dc;while(r>=0&&r<3&&c>=0&&c<3){if(arrows[r*3+c]){button.classList.add('blocked');setTimeout(()=>button.classList.remove('blocked'),350);return toast('Путь занят другой луной')}r+=dr;c+=dc}button.classList.add('fly');arrows[index]=null;setTimeout(renderArrows,380);if(!arrows.filter(Boolean).length)setTimeout(()=>{state.energy++;state.crystals+=100;update();currentArrowLevel=(currentArrowLevel+1)%arrowLevels.length;resetArrow();toast('Затор расчищен! +1 энергия и +100 кристаллов')},420)}
+$('#resetArrow').addEventListener('click',resetArrow);
+resetWater();resetArrow();update();
