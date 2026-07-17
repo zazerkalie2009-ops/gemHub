@@ -175,6 +175,7 @@ const initScene = () => {
         
         group.add(domeGroup);
 
+        let lockMesh = null;
         if (!data.locked) {
             crystals.visible = true; 
             domeGroup.visible = false;
@@ -182,12 +183,12 @@ const initScene = () => {
             crystals.visible = false;
             domeGroup.visible = false;
             
-            const lockMesh = new THREE.Mesh(new THREE.BoxGeometry(0.8, 1, 0.3), new THREE.MeshStandardMaterial({color: 0xffaa00}));
+            lockMesh = new THREE.Mesh(new THREE.BoxGeometry(0.8, 1, 0.3), new THREE.MeshStandardMaterial({color: 0xffaa00}));
             lockMesh.position.y = 2.2;
             group.add(lockMesh);
         }
 
-        moons[data.id] = { group, crystals, domeGroup };
+        moons[data.id] = { group, crystals, domeGroup, lockMesh, mesh };
     });
 
     window.addEventListener('resize', () => {
@@ -242,10 +243,33 @@ const initScene = () => {
 
     window.update3DScene = (state) => {
         moonData.forEach(data => {
-            if (data.locked) return;
-            const isReady = state.ready && state.ready[data.id] > 0;
-            moons[data.id].crystals.visible = isReady;
-            moons[data.id].domeGroup.visible = !isReady; 
+            // Find if this slot was bought
+            let moonId = data.id;
+            let isLocked = data.locked;
+            
+            // If it's a slot, check if we have a bought moon for it
+            if (isLocked) {
+              const boughtMoons = state.moons.filter(m => m !== 'Элори' && m !== 'Теллу' && m !== 'Фонея');
+              if (data.id === 'slot-1' && boughtMoons.length > 0) {
+                moonId = boughtMoons[0];
+                isLocked = false;
+              } else if (data.id === 'slot-2' && boughtMoons.length > 1) {
+                moonId = boughtMoons[1];
+                isLocked = false;
+              }
+            }
+
+            if (moons[data.id]) {
+                if (!isLocked && moons[data.id].lockMesh) {
+                    moons[data.id].lockMesh.visible = false;
+                    moons[data.id].mesh.material = moonMat;
+                }
+                if (!isLocked) {
+                    const isReady = state.ready && state.ready[moonId] > 0;
+                    moons[data.id].crystals.visible = isReady;
+                    moons[data.id].domeGroup.visible = !isReady;
+                }
+            }
         });
     };
     
